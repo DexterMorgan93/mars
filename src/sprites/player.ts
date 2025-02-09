@@ -8,7 +8,7 @@ import { GameState } from "../game";
 let player: Sprite;
 let app: Application<Renderer>;
 // таймер блокировки корабля после попадания бомбы
-let lockTimeOut;
+let lockTimeOut: null | number;
 
 export function addPlayer(currApp: Application, root: PIXI.Container) {
   app = currApp;
@@ -16,8 +16,8 @@ export function addPlayer(currApp: Application, root: PIXI.Container) {
   player.anchor.set(0.5);
   player.position.x = appConstants.size.WIDTH / 2;
   player.position.y = appConstants.size.HEIGHT - 200;
+  player.scale.set(0.3);
 
-  console.log("addPlayer: player set", player);
   return player;
 }
 
@@ -34,7 +34,6 @@ export const lockPlayer = (): boolean => {
 };
 
 export function tickPlayer(state: GameState) {
-  console.log("tickplayer");
   const playerLocked = lockPlayer();
   if (playerLocked) {
     player.alpha = 0.5;
@@ -53,6 +52,5 @@ export function tickPlayer(state: GameState) {
   }
 }
 export function getPlayer() {
-  console.log("getPlayer:", player);
   return player;
 }

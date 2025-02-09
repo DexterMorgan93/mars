@@ -44,7 +44,7 @@ async function createScene() {
 function initInteraction() {
   gameState.mousePosition = getPlayer().position.x;
 
-  gameState.app?.stage.addEventListener("pointermove", (e) => {
+  gameState.app?.stage.addEventListener("pointermove", e => {
     gameState.mousePosition = e.global.x;
   });
 
@@ -58,7 +58,7 @@ export async function initGame() {
     if (progress === 100) {
       const app = await createScene(); // Дожидаемся завершения сцены
       gameState.app = app; // Устанавливаем `app` в gameState
-      initInteraction(); // Теперь `player` уже создан
+      initInteraction();
     }
   });
 }
