@@ -21,6 +21,7 @@ const gameState: GameState = {
 async function createScene() {
   // This class automatically creates the renderer, ticker and root container.
   const app = new PIXI.Application();
+  globalThis.__PIXI_APP__ = app;
   await app.init({
     background: "#000000",
     antialias: true,
