@@ -1,7 +1,13 @@
 import { loadAssets } from "./common/assets";
 import * as PIXI from "pixi.js";
 import appConstants from "./common/constants";
-import { addPlayer, getPlayer, tickPlayer } from "./sprites/player";
+import {
+  addPlayer,
+  getPlayer,
+  playerShoots,
+  tickPlayer,
+} from "./sprites/player";
+import { addBullet, bullettick, initBullets } from "./sprites/bullets";
 
 export interface GameState {
   stopped: boolean;
@@ -36,6 +42,8 @@ async function createScene() {
   rootcontainer.interactive = true;
   rootcontainer.hitArea = app.screen;
 
+  const bullets = initBullets(app, rootcontainer);
+  rootcontainer.addChild(bullets);
   const player = addPlayer(app, rootcontainer);
   rootcontainer.addChild(player);
 
@@ -45,12 +53,18 @@ async function createScene() {
 function initInteraction() {
   gameState.mousePosition = getPlayer().position.x;
 
-  gameState.app?.stage.addEventListener("pointermove", e => {
+  gameState.app?.stage.addEventListener("pointermove", (e) => {
     gameState.mousePosition = e.global.x;
+  });
+  document.addEventListener("keydown", (e: KeyboardEvent) => {
+    if (e.code === "Space") {
+      playerShoots();
+    }
   });
 
   gameState.app?.ticker.add(() => {
     tickPlayer(gameState);
+    bullettick();
   });
 }
 

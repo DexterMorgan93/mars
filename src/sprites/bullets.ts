@@ -23,14 +23,14 @@ export function initBullets(currApp: PIXI.Application, root: PIXI.Container) {
 // функция очистки всех буллетов при начале новой игры
 export function clearBullets() {
   // проходимся по всем буллетам и удаляем их
-  bullets.children.forEach(bullet => {
+  bullets.children.forEach((bullet) => {
     bullets.removeChild(bullet);
     // уничтожаем их, чтобы освободить память
     bullet.destroy({ children: true });
   });
 }
 
-export function addBullet(coord) {
+export function addBullet(coord: { x: number; y: number }) {
   if (timeout) {
     return;
   }
@@ -75,4 +75,18 @@ export function addBullet(coord) {
 export function destroyBullet(bullet: PIXI.AnimatedSprite) {
   bullets.removeChild(bullet);
   bullet.destroy();
+}
+
+export function bullettick() {
+  const toremove: PIXI.ContainerChild[] = [];
+  bullets.children.forEach((bullet) => {
+    bullet.position.y -= bulletSpeed * 2;
+    if (bullet.position.y < 0) {
+      toremove.push(bullet);
+    }
+  });
+  toremove.forEach((bullet) => {
+    bullets.removeChild(bullet);
+    bullet.destroy({ children: true });
+  });
 }

@@ -4,11 +4,12 @@ import { allTeturesKeys } from "../common/textures";
 import appConstants from "../common/constants";
 import * as PIXI from "pixi.js";
 import { GameState } from "../game";
+import { addBullet } from "./bullets";
 
 let player: Sprite;
 let app: Application<Renderer>;
 // таймер блокировки корабля после попадания бомбы
-let lockTimeOut: null | number;
+let lockTimeOut: null | number = null;
 
 export function addPlayer(currApp: Application, root: PIXI.Container) {
   app = currApp;
@@ -21,24 +22,28 @@ export function addPlayer(currApp: Application, root: PIXI.Container) {
   return player;
 }
 
-export const lockPlayer = (): boolean => {
+export const lockPlayer = () => {
   if (lockTimeOut) {
     return true;
   }
-  player._accessibleActive = false;
+  player.interactive = false;
   lockTimeOut = setTimeout(() => {
     lockTimeOut = null;
-    player._accessibleActive = true;
+    player.interactive = true;
   }, appConstants.timeouts.playerLock);
-  return false;
+};
+
+export const playerShoots = () => {
+  if (!lockTimeOut) {
+    addBullet({ x: player.position.x, y: player.position.y });
+  }
 };
 
 export function tickPlayer(state: GameState) {
-  const playerLocked = lockPlayer();
-  if (playerLocked) {
-    player.alpha = 0.5;
-  } else {
+  if (player.interactive) {
     player.alpha = 1;
+  } else {
+    player.alpha = 0.5;
   }
 
   const playerPosition = player.position.x;
